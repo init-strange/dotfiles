@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+<action>
+	<icon>kitty</icon>
+	<name>Kitty</name>
+	<submenu></submenu>
+	<unique-id>1750331412748372-1</unique-id>
+	<command>kitty --working-directory=%f
+</command>
+	<description>open selected file/cwdd in kitty</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<startup-notify/>
+	<directories/>
+</action>
+</actions>

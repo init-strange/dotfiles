@@ -1,0 +1,31 @@
+# vim:fileencoding=utf-8:foldmethod=marker
+
+# BEGIN_KITTY_THEME
+# Everforest Dark Hard
+include current-theme.conf
+# END_KITTY_THEME
+font_family Iosevka Nerd Font
+font_size 14
+window_padding_width 5
+tab_bar_style powerline
+confirm_os_window_close 0
+background_opacity 0.8
+shell /bin/bash
+allow_remote_control yes
+
+
+map ctrl+plus change_font_size all +2.0
+map ctrl+minus change_font_size all -2.0
+map ctrl+0 change_font_size all 0  # Reset
+map ctrl+shift+enter launch --cwd=current --location=vsplit
+map ctrl+h neighboring_window left
+map ctrl+j neighboring_window down
+map ctrl+k neighboring_window up
+map ctrl+l neighboring_window right
+map ctrl+shift+h move_window left
+map ctrl+shift+j move_window down
+map ctrl+shift+k move_window up
+map ctrl+shift+l move_window right
+
+
+

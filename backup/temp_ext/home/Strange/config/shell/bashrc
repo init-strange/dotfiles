@@ -1,0 +1,123 @@
+export SDL_VIDEODRIVER=wayland
+export XDG_RUNTIME_DIR=/run/user/$(id -u)
+export EDITOR=nvim
+export PATH="$PATH:/home/Strange/.local/bin"
+
+##########################################################################################################
+
+chmod_shell_scripts() {
+    dir="$HOME/.config/shell/scripts/"
+    if [[ -d "$dir" ]]; then
+        find "$dir" -type f -name "*.sh" -exec chmod +x {} +
+        echo "Made all .sh scripts in $dir executable."
+    else
+        echo "Directory not found: $dir"
+    fi
+}
+chmod_sway_scripts() {
+    dir="$HOME/.config/sway/scripts"
+    if [[ -d "$dir" ]]; then
+        find "$dir" -type f -name "*.sh" -exec chmod +x {} +
+        echo "Made all .sh scripts in $dir executable."
+    else
+        echo "Directory not found: $dir"
+    fi
+}
+fetch(){
+    bash $HOME/.config/shell/scripts/my_scripts/custom-fetch.sh 
+}
+nuke(){
+    bash $HOME/.config/shell/scripts/my_scripts/nuke.sh 
+}
+vm-deb(){
+    bash $HOME/.config/shell/scripts/my_scripts/start-deb.sh
+}
+remapcaps(){
+    bash $HOME/.config/shell/scripts/my_scripts/keymap.sh
+}
+new-gtk-theme(){
+    bash $HOME/.config/shell/scripts/my_scripts/new-theme.sh "$@"
+}
+full-backup(){
+    bash $HOME/.config/shell/scripts/my_scripts/backup/backup.sh
+}
+
+##############################################sway only################################################
+lock-suspend(){
+    bash ~/.config/sway/scripts/lock-suspend.sh
+}
+##########################################################################################################
+
+connectwifi(){
+    ssid="STRANGE"
+    password="12345678"
+    echo "reconnecting to $ssid..."
+#    nmcli radio wifi off
+#    nmcli radio wifi on
+    echo "enter pass:"
+    nmcli device wifi connect $ssid password $password 
+}
+
+resetnetworking(){
+    nmcli networking off && nmcli networking on
+}
+
+
+###################################################
+##########SPACE FOR ALIAS##########################
+alias slip='lock-suspend'
+alias slep='lock-suspend' 
+alias die='lock-suspend'
+alias dii='lock-suspend'
+alias diie='lock-suspend'
+alias die-now='shutdown -P now'
+alias sus='systemctl suspend'
+
+alias ls='ls --color=auto'
+alias ll='ls -lh --color=auto'
+alias la='ls -a --color=auto'
+
+alias bashrc='$EDITOR ~/.bashrc'
+alias reload='source $HOME/.config/shell/bashrc'
+alias relaod='source $HOME/.config/shell/bashrc'
+alias srcbash='source $HOME/.config/shell/bashrc'
+
+alias cd..='cd ..'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias home='cd ~'
+
+alias c='clear'
+alias airpln='resetnetworking'
+alias pop='pop_kitty'
+
+
+alias ncmp='ncmpcpp -s visualizer'
+alias moosic='music && music_menu'
+
+
+#################################################################################
+# Minimal prompt: folder + branch
+parse_git_branch() {
+  git rev-parse --is-inside-work-tree &>/dev/null || return
+  echo " [$(git rev-parse --abbrev-ref HEAD 2>/dev/null)]"
+}
+PS1='\[\e[0;34m\]\W\[\e[0;35m\]$(parse_git_branch)\[\e[0m\] \$ '
+#################################################################################
+# Created by `pipx` on 2025-06-18 06:56:14
+  eval "$(register-python-argcomplete pipx)"
+
+
+source $HOME/.config/shell/scripts/my_scripts/narcissist.sh
+source $HOME/.config/shell/scripts/my_scripts/quicklaunch.sh
+source $HOME/.config/shell/scripts/my_scripts/todo.sh
+source $HOME/.config/shell/scripts/my_scripts/pop_kitty.sh
+
+source $HOME/.config/shell/scripts/fzf-shell/fzf-shell.sh
+source $HOME/.config/shell/scripts/fzf-shell/pacfzf.sh
+
+source $HOME/.config/shell/scripts/music-player/music-player.sh
+source $HOME/.config/shell/scripts/bt-connect/oppo-buds.sh
+source $HOME/.config/shell/scripts/yt-dlp/ytdlpmp3.sh
+source $HOME/.config/shell/scripts/yt-dlp/quickgrab.sh
+source $HOME/.config/shell/scripts/mpv-scripts/mpv_link_player.sh

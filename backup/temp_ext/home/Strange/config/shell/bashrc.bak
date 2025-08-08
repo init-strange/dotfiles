@@ -1,0 +1,248 @@
+export SDL_VIDEODRIVER=wayland
+export XDG_RUNTIME_DIR=/run/user/$(id -u)
+export EDITOR=nvim
+export PATH="$PATH:/home/Strange/.local/bin"
+IP=""
+
+source $HOME/.config/sway/scripts/my_scripts/narcissist.sh
+##########################################################################################################
+
+export NNN_TMPFILE="${HOME}/.config/nnn/.lastd"
+
+nn() {
+    # Use -p to write the current dir to file
+    /usr/bin/nnn -p "$NNN_TMPFILE" "$@"
+    if [ -f "$NNN_TMPFILE" ] && [ -s "$NNN_TMPFILE" ]; then
+        dir=$(cat "$NNN_TMPFILE")
+        rm -f "$NNN_TMPFILE"
+        if [ -d "$dir" ]; then
+            cd "$dir"
+        fi
+    fi
+}
+
+chmod_my_scripts() {
+    dir="$HOME/.config/sway/scripts/my_scripts"
+    if [[ -d "$dir" ]]; then
+        find "$dir" -type f -name "*.sh" -exec chmod +x {} +
+        echo "Made all .sh scripts in $dir executable."
+    else
+        echo "Directory not found: $dir"
+    fi
+}
+chmod_sway_scripts() {
+    dir="$HOME/.config/sway/scripts/"
+    if [[ -d "$dir" ]]; then
+        find "$dir" -type f -name "*.sh" -exec chmod +x {} +
+        echo "Made all .sh scripts in $dir executable."
+    else
+        echo "Directory not found: $dir"
+    fi
+}
+fetch(){
+    bash $HOME/.config/sway/scripts/my_scripts/custom-fetch.sh 
+}
+nuke(){
+    bash $HOME/.config/sway/scripts/my_scripts/nuke.sh 
+}
+build(){
+    bash $HOME/.config/sway/scripts/my_scripts/build.sh "$@"
+}
+vm-deb(){
+    bash  $HOME/.config/sway/scripts/my_scripts/start-deb.sh
+}
+remapcaps(){
+    bash  $HOME/.config/sway/scripts/my_scripts/keymap.sh
+}
+new-gtk-theme(){
+    bash ~/.config/sway/scripts/my_scripts/new-theme.sh "$@"
+}
+lock-suspend(){
+    bash ~/.config/sway/scripts/lock-suspend.sh
+}
+
+##########################################################################################################
+
+popkitty(){
+    kitty --detach sh -c "cd \"$PWD\"; exec bash"
+}
+__fzf_history_insert() {
+  local selected
+  selected=$(history | fzf --tac --reverse | sed 's/ *[0-9]* *//')
+  if [[ -n "$selected" ]]; then
+    # Feed it into the shell as if typed
+    READLINE_LINE="$selected"
+    READLINE_POINT=${#READLINE_LINE}
+  fi
+}
+quicklaunch_documents(){
+    path="$HOME/Downloads/Firefox_Downloads/documents/"
+    cd "$path"
+    if [ "$#" -gt 0 ]; then
+    "$@"
+    fi
+}
+quicklaunch_projects(){
+    path="$HOME/purgatory"
+    cd "$path"
+    if [ "$#" -gt 0 ]; then
+    "$@"
+    fi
+}
+quicklaunch_notes(){
+    path="$HOME/purgatory/notes/my_notes"
+    cd "$path"
+    if [ "$#" -gt 0 ]; then
+    "$@"
+    fi
+}
+quicklaunch_config(){
+    path="$HOME/.config"
+    cd "$path"
+    if [ "$#" -gt 0 ]; then
+    "$@"
+    fi
+}
+connectwifi(){
+    ssid="STRANGE"
+    password="12345678"
+    echo "reconnecting to $ssid..."
+#    nmcli radio wifi off
+#    nmcli radio wifi on
+    echo "enter pass:"
+    nmcli device wifi connect $ssid password $password 
+}
+
+resetplane(){
+    nmcli networking off && nmcli networking on
+}
+
+# Fake Vim-style shell commands
+function :q { exit; }
+function :q! { exit; }
+
+function :wq {
+  echo "[bash] E492: Not an editor"
+}
+
+function :w {
+  echo "[bash] E212: Can't open file for writing"
+}
+##########################################################################################################
+adbinit(){
+    adb kill-server
+    adb start-server
+    adb tcpip 5555
+}
+adblink(){
+    echo "connecting to $IP"
+    adb connect $IP:5555    
+    echo "connected to $IP"
+}
+Strangescr(){
+    scrcpy --shortcut-mod=rctrl
+}
+ascii_vid(){
+    bash  $HOME/dump/matrix/myScripts/asciiart.sh "$@"
+}
+todo() {
+    local file="$HOME/purgatory/notes/my_notes/todo.md"
+    [[ -f "$file" ]] || touch "$file"
+
+    case "$1" in
+        -e|--edit)
+            $EDITOR "$file"
+            ;;
+    -a|--add)
+        shift
+        local text="$*"
+        if [[ -z "$text" ]]; then
+            echo "Usage: todo -a <task text>"
+            return 1
+        fi
+        local count
+        count=$(grep -c '^[0-9]\+\. \[ \]' "$file" 2>/dev/null) || count=0
+        local num=$((count + 1))
+        echo "$num. [ ] $text" >> "$file"
+        echo "Added: $num. [ ] $text"
+        ;;
+        "" )
+            less +Gg "$file"
+            ;;
+        * )
+            echo "Usage: todo [-e|--edit] [-a|--add <text>]"
+            ;;
+    esac
+}
+
+
+
+
+
+
+###################################################
+##########SPACE FOR ALIAS##########################
+alias slip='lock-suspend'
+alias slep='lock-suspend' 
+alias die='lock-suspend'
+alias dii='lock-suspend'
+alias diie='lock-suspend'
+alias die-now='shutdown -P now'
+
+alias ls='ls -1 --color=auto'
+alias ll='ls -1 -lh --color=auto'
+alias la='ls -1 -a --color=auto'
+
+alias md='mkdir -p'
+alias rd='rmdir'
+
+alias bashrc='$EDITOR ~/.bashrc'
+alias reload='source ~/.bashrc'
+alias srcbash='source ~/.bashrc'
+
+alias configs='quicklaunch_config'
+alias config='quicklaunch_config'
+alias projects='quicklaunch_projects'
+alias documents='quicklaunch_documents'
+alias docu='quicklaunch_documents'
+alias project='quicklaunch_projects'
+alias proj='quicklaunch_projects'
+alias note='quicklaunch_notes'
+alias notes='quicklaunch_notes'
+
+alias cd..='cd ..'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias home='cd ~'
+
+alias vim='nvim'
+alias nano='nvim'
+alias c='clear'
+alias airpln='resetplane'
+alias pop='popkitty'
+
+alias full-backup="$HOME/.config/sway/scripts/my_scripts/backup/backup.sh"
+#
+# Bind Ctrl+F to run fzf and fill result in the prompt
+bind -x '"\C-f": "READLINE_LINE=$(fzf); READLINE_POINT=${#READLINE_LINE}"'
+# Ctrl+h: and Ctrl+; "\e[99~":" see kitty config Fuzzy search through Bash history and insert selected command
+bind -x '"\e[99~":"__fzf_history_insert"'
+bind -x '"\C-h":"__fzf_history_insert"'
+bind -x '"\eOR":popkitty'
+
+#################################################################################
+# Minimal prompt: folder + branch
+parse_git_branch() {
+  git rev-parse --is-inside-work-tree &>/dev/null || return
+  echo " [$(git rev-parse --abbrev-ref HEAD 2>/dev/null)]"
+}
+PS1='\[\e[0;34m\]\W\[\e[0;35m\]$(parse_git_branch)\[\e[0m\] \$ '
+
+
+
+
+
+
+
+# Created by `pipx` on 2025-06-18 06:56:14
+  eval "$(register-python-argcomplete pipx)"

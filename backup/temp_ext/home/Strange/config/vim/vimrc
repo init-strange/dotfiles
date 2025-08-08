@@ -1,0 +1,85 @@
+" notdummy
+set shell=/bin/bash
+set noautochdir
+cd ~
+set termguicolors
+highlight clear
+syntax reset
+set background=dark
+
+set nocompatible
+syntax on
+set number
+set relativenumber
+set tabstop=4
+set shiftwidth=4
+set expandtab
+set cursorline
+set wrap
+set laststatus=2
+set encoding=utf-8
+set whichwrap+=h,l
+set virtualedit=onemore
+set selection=inclusive
+set foldmethod=indent
+set foldlevel=99
+set clipboard=unnamedplus
+set makeprg=python3\ %
+
+if filereadable(expand("~/.vimrc.plug"))
+    source ~/.vimrc.plug
+endif
+
+" Load last used theme index
+if filereadable(expand('~/.vim_last_theme'))
+    let g:theme_index = str2nr(readfile(expand('~/.vim_last_theme'))[0])
+else
+    let g:theme_index = 0
+endif
+
+" List of themes
+let g:my_themes = ['default', 'gruvbox', 'dracula', 'onedark', 'nightfox', 'everforest', 'gruvbox-material', 'edge', 'sonokai', 'zephyr']
+
+function! ToggleColorscheme()
+    let g:theme_index = (g:theme_index + 1) % len(g:my_themes)
+    if g:my_themes[g:theme_index] == 'default'
+        highlight clear
+        syntax reset
+    else
+        execute 'colorscheme ' . g:my_themes[g:theme_index]
+    endif
+    call writefile([g:theme_index], expand('~/.vim_last_theme'))
+endfunction
+
+" Set theme on startup
+if g:my_themes[g:theme_index] == 'default'
+    highlight clear
+    syntax reset
+else
+    execute 'colorscheme ' . g:my_themes[g:theme_index]
+endif
+
+" Keybinding to toggle themes
+nnoremap <leader>t :call ToggleColorscheme()<CR>
+
+" Clipboard integration with wl-clipboard
+vnoremap <leader>y :w !wl-copy<CR><CR>
+nnoremap <leader>p :r !wl-paste<CR>
+
+" NERDTree toggle
+map <C-n> :NERDTreeToggle<CR>
+
+" Lightline configuration
+let g:lightline = {
+      \ 'colorscheme': 'wombat',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'readonly', 'filename', 'modified', 'helloworld' ] ]
+      \ },
+      \ 'component': {
+      \   'helloworld': 'Oh my darling! What if u fly?!'
+      \ },
+      \ }
+
+
+

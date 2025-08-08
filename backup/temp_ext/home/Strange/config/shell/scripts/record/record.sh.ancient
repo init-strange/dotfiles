@@ -1,0 +1,77 @@
+#!/usr/bin/env sh
+
+# Colors and logging
+BLUE="\e[34m"; RESET="\e[0m"; RED="\e[31m"; YELLOW="\e[33m"; GREEN="\e[32m"
+log_info()    { echo -e "${BLUE}[INFO]${RESET} $1"; }
+log_warning() { echo -e "${YELLOW}[WARN]${RESET} $1"; }
+log_error()   { echo -e "${RED}[ERROR]${RESET} $1"; }
+log_success() { echo -e "${GREEN}[SUCCESS]${RESET} $1"; }
+
+# Script paths
+FULLSCREEN_SCRIPT="/home/Strange/.config/shell/scripts/record/record-full.sh"
+SLURP_SCRIPT="/home/Strange/.config/shell/scripts/record/record-slurp.sh"
+RECORD_AUDIO_SCRIPT="/home/Strange/.config/shell/scripts/record/record-audio.sh"
+
+# Check existence
+[ ! -x "$FULLSCREEN_SCRIPT" ] && { log_error "Fullscreen script not found"; exit 1; }
+[ ! -x "$SLURP_SCRIPT" ] && { log_error "Slurp script not found"; exit 1; }
+[ ! -x "$RECORD_AUDIO_SCRIPT" ] && { log_warning "Audio record script not found"; RECORD_AUDIO_SCRIPT=""; }
+
+#########################
+## Ask for audio toggle
+#########################
+AUDIO_ENABLED=0
+AUDIO_MODE=""
+if [ -n "$RECORD_AUDIO_SCRIPT" ]; then
+  read -r -p "$(echo -e "${BLUE}[?]${RESET} Record audio? (mic/system/both/N): ")" AUDIO_CHOICE
+  case "$AUDIO_CHOICE" in
+    m|mic|Mic|MIC)
+      AUDIO_ENABLED=1
+      AUDIO_MODE="--mic"
+      ;;
+    s|sys|system|System|SYSTEM)
+      AUDIO_ENABLED=1
+      AUDIO_MODE="--system"
+      ;;
+    b|both|Both|BOTH)
+      AUDIO_ENABLED=1
+      AUDIO_MODE="--both"
+      ;;
+    ""|n|N|no|No|NO)
+      log_info "Audio recording disabled by default or user choice."
+      ;;
+    *)
+      log_warning "Unrecognized input. Defaulting to no audio."
+      ;;
+  esac
+  echo
+  sleep 0.1
+fi
+
+if [ "$AUDIO_ENABLED" -eq 1 ]; then
+    log_info "Starting audio recording in background..."
+    "$RECORD_AUDIO_SCRIPT" "$AUDIO_MODE" &
+    AUDIO_PID=$!
+    log_info "Audio PID: $AUDIO_PID"
+fi
+
+####################
+## Video mode ask
+####################
+read -r -p "$(echo -e "${BLUE}[?]${RESET} Record full screen or slurp area? (Enter 's' for slurp, default is full): ")" MODE
+
+if [ "$MODE" = "s" ] || [ "$MODE" = "S" ]; then
+    log_info "Launching slurp (area) recording..."
+    "$SLURP_SCRIPT"
+else
+    log_info "Launching full screen recording..."
+    "$FULLSCREEN_SCRIPT"
+fi
+
+# Stop audio recording
+if [ "$AUDIO_ENABLED" -eq 1 ]; then
+    log_info "Stopping audio..."
+    kill "$AUDIO_PID"
+    wait "$AUDIO_PID"
+    log_success "Audio recording saved and process ended."
+fi

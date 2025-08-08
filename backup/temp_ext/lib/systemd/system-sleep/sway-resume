@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ "$1" = "post" ]; then
+	sleep 1.5
+	export XDG_RUNTIME_DIR=/run/user/$(id -u Strange)
+	export DISPLAY=:0
+	export WAYLAND_DISPLAY=wayland-0
+	su Strange -c 'swaymsg "output * dpms on"' 2>/dev/null
+fi
+

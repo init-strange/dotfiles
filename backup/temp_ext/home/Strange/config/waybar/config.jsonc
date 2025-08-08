@@ -1,0 +1,229 @@
+{
+    "style": "~/.config/waybar/style.css",
+    "layer": "top",
+    "position": "bottom",
+    "height": 30,
+    "spacing": 0,
+    "margin": "1 2 2 2",
+
+    "modules-left": [
+        "sway/workspaces",
+        "clock",
+        "custom/bluetooth_battery",
+        "sway/mode"
+    ],
+    "modules-center": [
+        "pulseaudio",
+        "backlight",
+        "cpu",
+        "disk",
+        "memory",
+        "network",
+        "tray"
+    ],
+    "modules-right": [
+        "custom/mpd" ,
+        "temperature",
+        "custom/uptime",
+        "battery" 
+    ],
+
+    "sway/workspaces": {
+        "disable-scroll": false,
+        "all-outputs": true,
+        "format": "{name}",
+        "format-icons": {
+            "1": "󰖟",
+            "2": "",
+            "3": "",
+            "4": "󰭹",
+            "5": "󰕧",
+            "6": "",
+            "7": "",
+            "8": "󰣇",
+            "9": "",
+            "10": ""
+        },
+        "persistent_workspaces": {
+            "1": [],
+            "2": [],
+            "3": [],
+            "4": [],
+            "5": []
+        }
+    },
+
+    "sway/mode": {
+        "format": "<span style=\"italic\">{}</span>"
+    },
+
+    "custom/playerctl": {
+        "format": " 󰐊 {}",
+        "return-type": "json",
+        "max-length": 40,
+        "exec": "playerctl -a metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"tooltip\": \"{{playerName}} : {{artist}} - {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F",
+        "on-click": "playerctl play-pause",
+        "on-click-right": "playerctl next",
+    },
+
+   // "custom/updates": {
+   //     "format": "󰚰 {}",
+   //     "exec": "checkupdates | wc -l",
+   //     "interval": 3600,
+   //     "on-click": "kitty -e sudo pacman -Syu",
+   //     "signal": 8
+   // },
+
+    "custom/uptime": {
+        "format": "󰔟 {}",
+        "exec": "uptime -p | sed 's/up //; s/ days/d/; s/ hours/h/; s/ minutes/m/'",
+        "interval": 60
+    },
+
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated": "󰈈",
+            "deactivated": "󰈉"
+        },
+        "tooltip": true
+    },
+
+    "clock": {
+    "format": "󰥔 {:%I:%M:%S %p}",
+    "interval": 1,
+    "format-alt": "󰃮 {:%d-%m-%Y}",
+    "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "calendar": {
+            "mode"          : "month",
+            "mode-mon-col"  : 3,
+            "weeks-pos"     : "right",
+            "on-scroll"     : 1,
+            "on-click-right": "mode",
+            "format": {
+                "months":     "<span color='#d3c6aa'><b>{}</b></span>",
+                "days":       "<span color='#e67e80'>{}</span>",
+                "weeks":      "<span color='#a7c080'><b>W{}</b></span>",
+                "weekdays":   "<span color='#7fbbb3'><b>{}</b></span>",
+                "today":      "<span color='#dbbc7f'><b><u>{}</u></b></span>"
+            }
+        },
+        "actions": {
+            "on-click-right": "mode",
+            "on-click-forward": "tz_up",
+            "on-click-backward": "tz_down",
+            "on-scroll-up": "shift_up",
+            "on-scroll-down": "shift_down"
+        }
+    },
+
+    "cpu": {
+        "format": "󰘚 {usage}%",
+        "tooltip": true,
+        "interval": 1,
+        "on-click": "kitty -e htop"
+    },
+
+    "memory": {
+    "format": "󰍛 {used}/{total}GB",
+        "interval": 1,
+        "on-click": "kitty -e htop"
+    },
+
+    "temperature": {
+        "critical-threshold": 80,
+        "format": "{icon} {temperatureC}°C",
+        "format-icons": ["󱃃", "󰔏", "󱃂"],
+        "on-click": "kitty -e s-tui"
+    },
+
+    "battery": {
+        "interval":1,
+        "states": {
+            "good": 95,
+            "warning": 30,
+            "critical": 10
+        },
+        "format": "{icon} {capacity}%",
+        "format-charging": "󰂄 {capacity}%",
+        "format-plugged": "󰚥 {capacity}%",
+        "format-alt": "{icon} {time}",
+        "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
+    },
+
+    "network": {
+        "format-wifi": "󰖩 {essid} {signalStrength}%",
+        "interval":1,
+        "format-ethernet": "󰈀 {ifname}",
+        "format-linked": "󰈀 {ifname} (No IP)",
+        "format-disconnected": " 󰖪  ",
+        "format-alt": "{ifname}: {ipaddr}/{cidr}",
+        "tooltip-format": "{ifname}: {ipaddr}",
+        "on-click": "kitty -e nmtui"
+    },
+
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-bluetooth": "󰂰 {volume}%",
+        "format-bluetooth-muted": "󰂲 {icon}",
+        "format-muted": "󰝟",
+        "format-icons": {
+            "headphone": "󰋋",
+            "hands-free": "󰥰",
+            "headset": "󰋎",
+            "phone": "󰏲",
+            "portable": "󰄝",
+            "car": "󰄋",
+            "default": ["󰕿", "󰖀", "󰕾"]
+        },
+        "on-click": "pkill pavucontrol || pavucontrol",
+        "on-click-right": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+        "on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ +2%",
+        "on-scroll-down": "pactl set-sink-volume @DEFAULT_SINK@ -2%"
+    },
+
+    "backlight": {
+        "format": "{icon} {percent}%",
+        "format-icons": ["󰃞", "󰃟", "󰃠"],
+        "on-scroll-up": "brightnessctl set +5%",
+        "on-scroll-down": "brightnessctl set 5%-"
+    },
+
+    "disk": {
+      "interval": 60,
+      //"format": "󰋊 :{used}/{total}",
+      "format": "󰋊 {used}",
+      "path": "/home",
+      "on-click": "kitty -e gdu /home"
+        },
+
+    "tray": {
+        "icon-size": 18,
+        "spacing": 5
+    },
+
+"custom/tmux": {
+  "format": " {}",
+  "interval": 5,
+  "exec": "~/.config/waybar/scripts/tmux-session-picker.sh",
+  "return-type": "json",
+  "tooltip": true,
+  "on-click": "~/.config/waybar/scripts/tmux-session.sh"
+},
+
+"custom/bluetooth_battery": {
+    "exec": "~/.config/waybar/scripts/bluetooth/oppo-status.sh",
+    "interval": 15,
+    "return-type": "json",
+    "on-click": "pkill blueman-manager || blueman-manager"
+},
+
+"custom/mpd": {
+    "exec": "~/.config/waybar/scripts/music-player/mpd-status.sh",
+    "interval": 2,
+    "return-type": "json",
+"on-click": "bash -i ~/.config/waybar/scripts/music-player/toggle-moosic.sh",
+    "on-scroll-up": "mpc next",
+    "on-scroll-down": "mpc prev"
+}
+}

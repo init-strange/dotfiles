@@ -1,0 +1,20 @@
+call plug#begin('~/.vim/plugged')
+
+" Theme plugins
+Plug 'morhetz/gruvbox'
+Plug 'dracula/vim'
+Plug 'joshdick/onedark.vim'
+Plug 'EdenEast/nightfox.nvim'
+Plug 'sainnhe/everforest'
+Plug 'sainnhe/gruvbox-material'
+Plug 'sainnhe/edge'
+Plug 'sainnhe/sonokai'
+Plug 'glepnir/zephyr-nvim'
+
+" Lightline (status bar)
+Plug 'itchyny/lightline.vim'
+
+" File Explorer
+Plug 'preservim/nerdtree'
+
+call plug#end()
